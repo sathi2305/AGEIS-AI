@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  aegis-x:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aegis-x-guardian
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - aegis-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  aegis-data:
+    driver: local

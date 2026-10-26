@@ -1,0 +1,6 @@
+{
+  "name": "AEGIS-X | Autonomous Reliability Intelligence",
+  "description": "Futuristic Site Reliability Engineering (SRE) and Chaos Engineering Command Center featuring real-time telemetry, distributed dependency blast-radius analysis, deterministic root-cause scoring, policy-driven self-healing recovery, and cryptographic audit ledger.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

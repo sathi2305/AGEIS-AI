@@ -1,0 +1,547 @@
+{
+  "incidents": [
+    {
+      "id": "INC-743627-658",
+      "title": "HIGH: order-service (Split from INC-743618)",
+      "severity": "HIGH",
+      "state": "DETECTED",
+      "targetService": "order-service",
+      "impactedServices": [
+        "order-service"
+      ],
+      "detectedAt": 1792924743626,
+      "summary": "Separated from incident INC-743618 by operator override. Originally grouped because: Direct downstream dependent timeout cascade",
+      "triggerMetric": "p95 Latency",
+      "triggerValue": "1200ms",
+      "threshold": "< 350ms",
+      "timeline": [
+        {
+          "id": "evt_split_1792924743627_INC-743627-658",
+          "timestamp": 1792924743627,
+          "type": "MANUAL_OVERRIDE",
+          "summary": "Incident split by operator from parent INC-743618",
+          "details": "Alert for order-service isolated into independent investigation pipeline.",
+          "author": "HUMAN_OPERATOR"
+        }
+      ],
+      "retryCount": 0,
+      "autoRecoveryEligible": false
+    },
+    {
+      "id": "INC-743618",
+      "title": "CRITICAL: Payment Service Degradation (Service Health Check)",
+      "severity": "CRITICAL",
+      "state": "RECOVERED",
+      "targetService": "payment-service",
+      "impactedServices": [
+        "api-gateway",
+        "order-service",
+        "payment-service"
+      ],
+      "detectedAt": 1792924743618,
+      "summary": "Continuous telemetry observation caught Payment Service breaching reliability SLA. Triggered by Service Health Check = OFFLINE (Zero Heartbeat).",
+      "triggerMetric": "Service Health Check",
+      "triggerValue": "OFFLINE (Zero Heartbeat)",
+      "threshold": "HEALTHY",
+      "timeline": [
+        {
+          "id": "evt_det_1792924743618",
+          "timestamp": 1792924743618,
+          "type": "DETECTION",
+          "summary": "Automated anomaly detected on Payment Service: Service Health Check breached threshold (OFFLINE (Zero Heartbeat) vs threshold HEALTHY)",
+          "details": "Threshold rule breached during sliding window observation. Severity graded as CRITICAL. Blast radius evaluated as HIGH (1 direct, 1 indirect downstream).",
+          "author": "SYSTEM_TELEMETRY"
+        },
+        {
+          "id": "evt_corr_1792924743618",
+          "timestamp": 1792924743618,
+          "type": "DETECTION",
+          "summary": "Incident correlation engine grouped 2 related alert(s) into this incident",
+          "details": "Suppressed duplicate standalone tickets: order-service (Error Rate), api-gateway (p95 Latency)",
+          "author": "AEGIS_CORRELATION_ENGINE"
+        },
+        {
+          "id": "evt_inv_1792924743618",
+          "timestamp": 1792924743618,
+          "type": "INVESTIGATION",
+          "summary": "Investigation started: Analyzing causal topological tree and metric deviations",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_plan_1792924743620",
+          "timestamp": 1792924743620,
+          "type": "PLANNING",
+          "summary": "Formulated mitigation plan: Graceful restart of payment-service container [Target: payment-service]",
+          "details": "Action: RESTART_SERVICE. Expected impact: Temporary 2-3s transient blip for in-flight requests; immediate resolution of thread deadlocks and OOM states.",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_appr_wait_1792924743620",
+          "timestamp": 1792924743620,
+          "type": "STATE_CHANGE",
+          "summary": "Awaiting human operator approval (Severity: CRITICAL)",
+          "details": "Consequential action requires explicit operator sign-off according to active safety governance policy.",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_1792924743621_w30b",
+          "timestamp": 1792924743621,
+          "type": "PLANNING",
+          "summary": "Dry-run simulation completed for RESTART_SERVICE",
+          "details": "[DRY RUN] Simulation verification passed for RESTART_SERVICE on Payment Service. No side effects applied.",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_1792924743622_fi5k",
+          "timestamp": 1792924743622,
+          "type": "APPROVAL",
+          "summary": "Recovery plan approved by HUMAN_OPERATOR",
+          "details": "Plan plan_1792924743620_n1aj authorized for execution on payment-service",
+          "author": "HUMAN_OPERATOR"
+        },
+        {
+          "id": "evt_1792924743623_6y06",
+          "timestamp": 1792924743623,
+          "type": "EXECUTION",
+          "summary": "Executed RESTART_SERVICE on payment-service",
+          "details": "Recovery action RESTART_SERVICE successfully applied to Payment Service.\nNeutralized active fault: Payment Crash [flt_1792924743618_vj30]; Service Payment Service pod restarted successfully. Total restarts: 1; Cleared internal memory leak / deadlocked execution threads.",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_1792924743624_n3r2",
+          "timestamp": 1792924743624,
+          "type": "VERIFICATION",
+          "summary": "Verification RECOVERED: Fresh telemetry verification PASSED across all criteria over 6s observation window.",
+          "details": "Observed: Error=0.15%, Latency=38ms, Health=healthy",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_1792924743624_epkj",
+          "timestamp": 1792924743624,
+          "type": "STATE_CHANGE",
+          "summary": "Incident resolved. System state verified nominal by closed-loop telemetry.",
+          "author": "AEGIS_ORCHESTRATOR"
+        },
+        {
+          "id": "evt_1792924743624_c5mo",
+          "timestamp": 1792924743624,
+          "type": "VERIFICATION",
+          "summary": "Post-recovery 10s watch window initiated to monitor for latent regression",
+          "author": "AEGIS_WATCH_ENGINE"
+        },
+        {
+          "id": "evt_split_parent_1792924743627",
+          "timestamp": 1792924743627,
+          "type": "MANUAL_OVERRIDE",
+          "summary": "Operator split 1 linked alert(s) into separate incident(s)",
+          "details": "Generated standalone incidents: INC-743627-658",
+          "author": "HUMAN_OPERATOR"
+        }
+      ],
+      "retryCount": 0,
+      "autoRecoveryEligible": false,
+      "blastRadius": {
+        "directAffectedServices": [
+          "order-service"
+        ],
+        "indirectAffectedServices": [
+          "api-gateway"
+        ],
+        "estimatedRpsImpact": 668,
+        "blastRadiusScore": "HIGH",
+        "propagationPaths": [
+          "payment-service ➔ order-service ➔ api-gateway"
+        ],
+        "measuredDownstreamFailures": 2
+      },
+      "linkedAlerts": [],
+      "investigation": {
+        "incidentId": "INC-743618",
+        "timestamp": 1792924743619,
+        "primaryRootCause": {
+          "id": "hyp_payment-service",
+          "rank": 1,
+          "serviceId": "payment-service",
+          "title": "Payment Service Failure (Fatal worker process crash (SIGSEGV/OOM). Service is offline.)",
+          "mechanism": "Fatal worker process crash (SIGSEGV/OOM). Service is offline.",
+          "confidence": 98,
+          "scoreBreakdown": {
+            "originWeight": 30,
+            "metricDeviation": 60,
+            "cascadeHopPenalty": 15,
+            "logSignatureMatch": 15
+          },
+          "evidenceList": [
+            {
+              "id": "ev_payment-service_1",
+              "serviceId": "payment-service",
+              "metric": "Error Rate",
+              "observedValue": "100%",
+              "baselineValue": "0.15%",
+              "deviationScore": 100,
+              "description": "Observed error rate elevated by 99.8 percentage points above baseline",
+              "significance": "PRIMARY"
+            },
+            {
+              "id": "ev_payment-service_2",
+              "serviceId": "payment-service",
+              "metric": "p95 Latency",
+              "observedValue": "5000ms",
+              "baselineValue": "35ms",
+              "deviationScore": 100,
+              "description": "Response time SLA breached. Observed p95 is 5000ms vs nominal 35ms",
+              "significance": "PRIMARY"
+            },
+            {
+              "id": "ev_payment-service_log",
+              "serviceId": "payment-service",
+              "metric": "Log Signature",
+              "observedValue": "FATAL [SIGSEGV]: Worker process died unexpectedl...",
+              "baselineValue": "ZERO_FATAL_LOGS",
+              "deviationScore": 95,
+              "description": "Crash signature matched in stdout/stderr: \"FATAL [SIGSEGV]: Worker process died unexpectedly. Uncaught memory panic in thread 0x4B9F.\"",
+              "significance": "PRIMARY"
+            }
+          ],
+          "recommendedActionType": "RESTART_SERVICE"
+        },
+        "alternativeHypotheses": [
+          {
+            "id": "hyp_order-service",
+            "rank": 2,
+            "serviceId": "order-service",
+            "title": "Order Service Failure (High error rate deadlock)",
+            "mechanism": "High error rate deadlock",
+            "confidence": 70,
+            "scoreBreakdown": {
+              "originWeight": 10,
+              "metricDeviation": 60,
+              "cascadeHopPenalty": 15,
+              "logSignatureMatch": 0
+            },
+            "evidenceList": [
+              {
+                "id": "ev_order-service_1",
+                "serviceId": "order-service",
+                "metric": "Error Rate",
+                "observedValue": "60%",
+                "baselineValue": "0.15%",
+                "deviationScore": 100,
+                "description": "Observed error rate elevated by 59.9 percentage points above baseline",
+                "significance": "PRIMARY"
+              },
+              {
+                "id": "ev_order-service_2",
+                "serviceId": "order-service",
+                "metric": "p95 Latency",
+                "observedValue": "4280ms",
+                "baselineValue": "35ms",
+                "deviationScore": 100,
+                "description": "Response time SLA breached. Observed p95 is 4280ms vs nominal 35ms",
+                "significance": "PRIMARY"
+              }
+            ],
+            "recommendedActionType": "RESTART_SERVICE"
+          },
+          {
+            "id": "hyp_api-gateway",
+            "rank": 3,
+            "serviceId": "api-gateway",
+            "title": "API Gateway Failure (High error rate deadlock)",
+            "mechanism": "High error rate deadlock",
+            "confidence": 64,
+            "scoreBreakdown": {
+              "originWeight": 10,
+              "metricDeviation": 54,
+              "cascadeHopPenalty": 15,
+              "logSignatureMatch": 0
+            },
+            "evidenceList": [
+              {
+                "id": "ev_api-gateway_1",
+                "serviceId": "api-gateway",
+                "metric": "Error Rate",
+                "observedValue": "42%",
+                "baselineValue": "0.15%",
+                "deviationScore": 84,
+                "description": "Observed error rate elevated by 41.9 percentage points above baseline",
+                "significance": "PRIMARY"
+              },
+              {
+                "id": "ev_api-gateway_2",
+                "serviceId": "api-gateway",
+                "metric": "p95 Latency",
+                "observedValue": "3449ms",
+                "baselineValue": "35ms",
+                "deviationScore": 100,
+                "description": "Response time SLA breached. Observed p95 is 3449ms vs nominal 35ms",
+                "significance": "PRIMARY"
+              }
+            ],
+            "missingEvidenceNotes": "Upstream gateway errors appear to be cascading symptoms from deeper dependencies.",
+            "recommendedActionType": "RESTART_SERVICE"
+          }
+        ],
+        "affectedDependencyChain": [
+          "api-gateway",
+          "order-service",
+          "payment-service"
+        ],
+        "telemetryWindowDurationSec": 60,
+        "confidenceExplanation": "Primary hypothesis ranked #1 with 98% confidence score based on topological root proximity, anomalous error rate deviation (60 pts), and log signature correlation.",
+        "uncertaintyNotes": "Network packet captures and distributed traces confirm deep causal impact; transient kernel buffer drops were ruled out due to steady interface TX/RX rates.",
+        "recommendedNextStep": "Execute verified recovery action 'RESTART_SERVICE' targeting payment-service. Run post-action verification window of 6s to confirm stabilization."
+      },
+      "planComparison": {
+        "primaryPlan": {
+          "id": "plan_1792924743620_n1aj",
+          "incidentId": "INC-743618",
+          "targetService": "payment-service",
+          "actionType": "RESTART_SERVICE",
+          "title": "Graceful restart of payment-service container",
+          "description": "Sends SIGTERM, flushes pending in-flight requests, spins up a fresh container instance with clean heap state.",
+          "parameters": {
+            "serviceId": "payment-service",
+            "actionType": "RESTART_SERVICE",
+            "retries": 0
+          },
+          "expectedImpact": "Temporary 2-3s transient blip for in-flight requests; immediate resolution of thread deadlocks and OOM states.",
+          "preconditions": [
+            "Simulator runtime running",
+            "Emergency stop flag is FALSE",
+            "Target service registered in topology registry"
+          ],
+          "safetyChecks": [
+            {
+              "name": "Target Service Allowlist Verification",
+              "passed": true,
+              "reason": "payment-service is an authorized managed service in topology."
+            },
+            {
+              "name": "Action Permitted by Safety Governance",
+              "passed": true,
+              "reason": "RESTART_SERVICE is classified as an approved remediation primitive."
+            },
+            {
+              "name": "Retry Limit Safety Margin",
+              "passed": true,
+              "reason": "Current retry count (0) is within allowable limit (3)."
+            },
+            {
+              "name": "Emergency Stop Interlock Check",
+              "passed": true,
+              "reason": "Emergency stop interlock is inactive; execution permitted."
+            }
+          ],
+          "requiresHumanApproval": true,
+          "rollbackPlan": "If RESTART_SERVICE fails or degrades telemetry further, orchestrator will revert to fallback safe mode or escalate to human operations.",
+          "rollbackAvailable": true,
+          "rollbackPrerequisites": [
+            "Container baseline image digest verified",
+            "Health probe definitions nominal",
+            "No active transactional lock deadlocks"
+          ],
+          "riskScore": {
+            "score": 25,
+            "level": "LOW",
+            "factors": [
+              {
+                "name": "Transient In-Flight Request Drops",
+                "impact": "2-3s brief connection reset during graceful container shutdown",
+                "weight": 25
+              },
+              {
+                "name": "Heap State Purge Safety",
+                "impact": "Eliminates memory leaks and stuck worker threads safely",
+                "weight": -10
+              }
+            ]
+          },
+          "estimatedRecoveryTimeSec": 8
+        },
+        "alternativePlan": {
+          "id": "plan_alt_1792924743620",
+          "incidentId": "INC-743618",
+          "targetService": "payment-service",
+          "actionType": "TRIP_CIRCUIT_BREAKER",
+          "title": "Trip circuit breaker on payment-service",
+          "description": "Isolates downstream dependency calls and serves cached fallback responses.",
+          "parameters": {
+            "serviceId": "payment-service",
+            "actionType": "TRIP_CIRCUIT_BREAKER",
+            "retries": 0
+          },
+          "expectedImpact": "Prevents cascading thread exhaustion to upstream services.",
+          "preconditions": [
+            "Simulator running"
+          ],
+          "safetyChecks": [
+            {
+              "name": "Target Service Allowlist Verification",
+              "passed": true,
+              "reason": "payment-service is an authorized managed service in topology."
+            },
+            {
+              "name": "Action Permitted by Safety Governance",
+              "passed": true,
+              "reason": "RESTART_SERVICE is classified as an approved remediation primitive."
+            },
+            {
+              "name": "Retry Limit Safety Margin",
+              "passed": true,
+              "reason": "Current retry count (0) is within allowable limit (3)."
+            },
+            {
+              "name": "Emergency Stop Interlock Check",
+              "passed": true,
+              "reason": "Emergency stop interlock is inactive; execution permitted."
+            }
+          ],
+          "requiresHumanApproval": true,
+          "rollbackPlan": "Revert TRIP_CIRCUIT_BREAKER policy overrides to 100% capacity.",
+          "rollbackAvailable": true,
+          "riskScore": {
+            "score": 20,
+            "level": "LOW",
+            "factors": [
+              {
+                "name": "Fallback Degradation",
+                "impact": "Clients receive synthetic fallback or cached data for target calls",
+                "weight": 20
+              }
+            ]
+          },
+          "estimatedRecoveryTimeSec": 5
+        },
+        "tradeoffSummary": "Primary action [RESTART_SERVICE] achieves definitive root-cause elimination with ~3s transient impact, whereas Alternative action [TRIP_CIRCUIT_BREAKER] minimizes operational blast radius but only offers temporary symptomatic relief.",
+        "recommendedPlanId": "plan_1792924743620_n1aj"
+      },
+      "recoveryPlan": {
+        "id": "plan_1792924743620_n1aj",
+        "incidentId": "INC-743618",
+        "targetService": "payment-service",
+        "actionType": "RESTART_SERVICE",
+        "title": "Graceful restart of payment-service container",
+        "description": "Sends SIGTERM, flushes pending in-flight requests, spins up a fresh container instance with clean heap state.",
+        "parameters": {
+          "serviceId": "payment-service",
+          "actionType": "RESTART_SERVICE",
+          "retries": 0
+        },
+        "expectedImpact": "Temporary 2-3s transient blip for in-flight requests; immediate resolution of thread deadlocks and OOM states.",
+        "preconditions": [
+          "Simulator runtime running",
+          "Emergency stop flag is FALSE",
+          "Target service registered in topology registry"
+        ],
+        "safetyChecks": [
+          {
+            "name": "Target Service Allowlist Verification",
+            "passed": true,
+            "reason": "payment-service is an authorized managed service in topology."
+          },
+          {
+            "name": "Action Permitted by Safety Governance",
+            "passed": true,
+            "reason": "RESTART_SERVICE is classified as an approved remediation primitive."
+          },
+          {
+            "name": "Retry Limit Safety Margin",
+            "passed": true,
+            "reason": "Current retry count (0) is within allowable limit (3)."
+          },
+          {
+            "name": "Emergency Stop Interlock Check",
+            "passed": true,
+            "reason": "Emergency stop interlock is inactive; execution permitted."
+          }
+        ],
+        "requiresHumanApproval": true,
+        "rollbackPlan": "If RESTART_SERVICE fails or degrades telemetry further, orchestrator will revert to fallback safe mode or escalate to human operations.",
+        "rollbackAvailable": true,
+        "rollbackPrerequisites": [
+          "Container baseline image digest verified",
+          "Health probe definitions nominal",
+          "No active transactional lock deadlocks"
+        ],
+        "riskScore": {
+          "score": 25,
+          "level": "LOW",
+          "factors": [
+            {
+              "name": "Transient In-Flight Request Drops",
+              "impact": "2-3s brief connection reset during graceful container shutdown",
+              "weight": 25
+            },
+            {
+              "name": "Heap State Purge Safety",
+              "impact": "Eliminates memory leaks and stuck worker threads safely",
+              "weight": -10
+            }
+          ]
+        },
+        "estimatedRecoveryTimeSec": 8
+      },
+      "executionRecord": {
+        "planId": "plan_1792924743620_n1aj",
+        "incidentId": "INC-743618",
+        "startedAt": 1792924743623,
+        "completedAt": 1792924743623,
+        "dryRun": false,
+        "success": true,
+        "resultMessage": "Recovery action RESTART_SERVICE successfully applied to Payment Service.",
+        "retriesAttempted": 0,
+        "logs": [
+          "Neutralized active fault: Payment Crash [flt_1792924743618_vj30]",
+          "Service Payment Service pod restarted successfully. Total restarts: 1",
+          "Cleared internal memory leak / deadlocked execution threads."
+        ]
+      },
+      "verificationReport": {
+        "incidentId": "INC-743618",
+        "evaluatedAt": 1792924743624,
+        "windowDurationSec": 6,
+        "criteria": {
+          "maxErrorRatePct": 2,
+          "maxLatencyP95Ms": 150,
+          "requiredHealth": [
+            "healthy"
+          ],
+          "maxQueueDepth": 100,
+          "observationWindowSec": 6
+        },
+        "actuals": {
+          "errorRatePct": 0.15,
+          "latencyP95Ms": 38,
+          "health": "healthy"
+        },
+        "passed": true,
+        "outcome": "RECOVERED",
+        "summary": "Fresh telemetry verification PASSED across all criteria over 6s observation window.",
+        "recommendation": "Incident resolved successfully. Closed-loop recovery complete. Archive telemetry snapshot and update baseline."
+      },
+      "resolvedAt": 1792924743624,
+      "watchWindow": {
+        "windowSeconds": 10,
+        "startedAt": 1792924743624,
+        "expiresAt": 1792924753624,
+        "regressionsDetected": 0,
+        "sustainedHealthy": true,
+        "status": "ACTIVE"
+      }
+    }
+  ],
+  "settings": {
+    "autoApprovalThreshold": "MEDIUM",
+    "requireApprovalAlways": false,
+    "maxRetriesAllowed": 3,
+    "verificationWindowSec": 6,
+    "errorThresholdPct": 5,
+    "latencyThresholdMs": 350,
+    "circuitBreakerThresholdPct": 25,
+    "simulatorSpeed": 1,
+    "telemetryRetentionMinutes": 30
+  },
+  "systemStartTimestamp": 1792163870135,
+  "totalTicks": 0
+}
